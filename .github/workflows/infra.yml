@@ -1,4 +1,4 @@
-name: Terraform S3 Demo
+name: Terraform + Ansible Demo
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  terraform:
+  infra:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,8 +26,19 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Plan
-        run: terraform plan
-
       - name: Terraform Apply
         run: terraform apply -auto-approve
+
+      - name: Get EC2 Public IP
+        id: ip
+        run: echo "ip=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
+
+      - name: Install Ansible
+        run: sudo apt-get update && sudo apt-get install -y ansible
+
+      - name: Update inventory with EC2 IP
+        run: |
+          sed -i "s/EC2_PUBLIC_IP/${{ steps.ip.outputs.ip }}/" inventory.ini
+
+      - name: Run Ansible Playbook
+        run: ansible-playbook -i inventory.ini playbook.yml
