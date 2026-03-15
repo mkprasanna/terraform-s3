@@ -44,8 +44,8 @@ resource "aws_instance" "demo" {
 }
 
 resource "aws_key_pair" "demo" {
-  key_name   = "demo-key"
-  public_key = file("demo-key.pub")
+  key_name   = "demo-key-2"
+  public_key = file("demo-key-2.pub")
 }
 
 output "public_ip" {
