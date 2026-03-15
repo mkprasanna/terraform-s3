@@ -2,13 +2,19 @@ provider "aws" {
   region = "us-east-2"
 }
 
-resource "aws_instance" "demo" {
-  ami           = "ami-02f3416038bdb17fb"
-  instance_type = "t2.micro"
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
 
-  tags = {
-    Name = "demo-ansible"
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
+}
+
+resource "aws_instance" "demo" {
+  ami           = data.aws_ami.amazon_linux.id
+  instance_type = "t2.micro"
 }
 
 output "public_ip" {
