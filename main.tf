@@ -12,10 +12,14 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
+data "aws_vpc" "default" {
+  default = true
+}
+
 resource "aws_security_group" "ssh" {
   name        = "allow_ssh"
   description = "Allow SSH inbound traffic"
-  vpc_id      = "default"
+  vpc_id      = data.aws_vpc.default.id
 
   ingress {
     from_port   = 22
