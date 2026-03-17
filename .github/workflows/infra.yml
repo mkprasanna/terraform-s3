@@ -36,10 +36,11 @@ jobs:
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install -y ansible
 
-      - name: Update inventory with EC2 IP
+      - name: Update inventory with EC2 public IP
         run: |
-          sed -i "s/EC2_PUBLIC_IP/${{ steps.ip.outputs.ip }}/" inventory.ini
+          sed -i "s/EC2_PUBLIC_IP/${{ steps.ip.outputs.public_ip }}/" inventory.ini
 
       - name: Run Ansible Playbook
         run: |
+          chmod 600 demo-key-2.pem
           ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini playbook.yml
