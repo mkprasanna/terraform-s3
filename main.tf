@@ -17,7 +17,7 @@ data "aws_vpc" "default" {
 }
 
 resource "aws_security_group" "ssh" {
-  name        = "allow_ssh"
+  name        = "allow_ssh_"
   description = "Allow SSH inbound traffic"
   vpc_id      = data.aws_vpc.default.id
 
