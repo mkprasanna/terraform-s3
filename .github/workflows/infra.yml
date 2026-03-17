@@ -43,7 +43,6 @@ jobs:
       - name: Run Ansible Playbook
         run: ansible-playbook -i inventory.ini playbook.yml
 
-      - name: Disable SSH host key checking
+      - name: Run Ansible Playbook
         run: |
-          echo "Host *" >> ~/.ssh/config
-          echo "    StrictHostKeyChecking no" >> ~/.ssh/config
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini playbook.yml
