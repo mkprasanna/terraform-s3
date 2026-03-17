@@ -1,6 +1,10 @@
 - hosts: demo
   become: yes
   tasks:
+    - name: Disable SSH host key checking
+      run: |
+        echo "Host *" >> ~/.ssh/config
+        echo "    StrictHostKeyChecking no" >> ~/.ssh/config
     - name: Install Apache
       yum:
         name: httpd
