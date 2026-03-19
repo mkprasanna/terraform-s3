@@ -41,6 +41,11 @@ resource "aws_instance" "demo" {
   instance_type          = "t3.micro"
   key_name               = aws_key_pair.demo.key_name
   vpc_security_group_ids = [aws_security_group.ssh.id]
+  user_data = <<EOF
+#!/bin/bash
+yum update -y
+yum install -y python3 python3-libselinux python3-dnf python3-rpm
+EOF
 }
 
 resource "aws_key_pair" "demo" {
