@@ -43,7 +43,7 @@ jobs:
 
       - name: Debug inventory
         run: |
-          echo "===== INVENTORY CONTENTS ====="
+          echo "===== INVENTORY CONTENTS Prasanna====="
           cat inventory.ini
           echo "=============================="
 
