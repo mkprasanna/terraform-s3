@@ -2,14 +2,6 @@
   gather_facts: no
   become: yes
 
-  pre_tasks:
-    - name: Install required Python packages for Ansible
-      yum:
-        name:
-          - python3
-          - python3-libselinux
-          - python3-dnf
-        state: present
   tasks:
     - name: Install Apache
       yum:
