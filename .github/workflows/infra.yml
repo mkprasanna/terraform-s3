@@ -26,6 +26,9 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Force recreate EC2 instance
+        run: terraform taint aws_instance.demo
+
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
