@@ -1,0 +1,14 @@
+- hosts: demo
+  gather_facts: no
+  become: yes
+
+  tasks:
+    - name: Instaall Apache
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start Apache
+      service:
+        name: httpd
+        state: started
