@@ -44,7 +44,7 @@ resource "aws_instance" "demo" {
   user_data = <<EOF
 #!/bin/bash
 yum update -y
-yum install -y python3 python3-libselinux python3-dnf python3-rpm
+yum install -y python3 python3-libselinux python3-dnf python3-rpm python3-setuptools python3-pip
 EOF
 }
 
