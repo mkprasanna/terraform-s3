@@ -45,7 +45,7 @@ jobs:
         run: |
           echo "===== INVENTORY CONTENTS Prasanna====="
           cat inventory.ini
-          echo "=============================="
+          echo "$==============================$"
 
       - name: Run Ansible Playbook
         run: |
