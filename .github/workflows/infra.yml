@@ -30,7 +30,7 @@ jobs:
         run: terraform taint aws_instance.demo
 
       - name: Terraform Apply
-        run: terraform apply
+        run: terraform apply -auto-approve
 
       - name: Get EC2 Public IP
         id: ip
