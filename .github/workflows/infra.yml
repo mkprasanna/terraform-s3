@@ -46,6 +46,16 @@ jobs:
             echo "Waiting for SSH..."
             sleep 5
           done
+      - name: Wait for cloud-init to finish
+        run: |
+          INSTANCE_ID=$(terraform output -raw instance_id)
+          PUBLIC_IP=$(terraform output -raw public_ip)
+          echo "Waiting for cloud-init to finish on $PUBLIC_IP..."
+          for i in {1..60}; do
+            ssh -o StrictHostKeyChecking=no -i demo-key-2.pem ec2-user@$PUBLIC_IP "test -f /var/lib/cloud/instance/boot-finished" && break
+            echo "cloud-init not finished yet..."
+            sleep 5
+          done
 
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install -y ansible
