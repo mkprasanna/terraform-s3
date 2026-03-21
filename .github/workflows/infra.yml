@@ -60,6 +60,11 @@ jobs:
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install -y ansible
 
+      - name: Fix key permissions
+        run: |
+          chmod 600 $GITHUB_WORKSPACE/demo-key-2.pem
+          ls -l $GITHUB_WORKSPACE/demo-key-2.pem
+
       - name: Update inventory with EC2 public IP
         run: |
           echo "[demo]" > inventory.ini
