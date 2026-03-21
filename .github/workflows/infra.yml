@@ -36,7 +36,7 @@ jobs:
         id: ip
         run: echo "ip=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
 
-      - name: Wait for SSH to be available 
+      - name: Wait for SSH to be available a
         run: |
           aws ec2 wait instance-status-ok --instance-ids $(terraform output -raw instance_id)
 
