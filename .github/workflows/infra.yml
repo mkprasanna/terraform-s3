@@ -30,11 +30,15 @@ jobs:
         run: terraform taint aws_instance.demo
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply
 
       - name: Get EC2 Public IP
         id: ip
         run: echo "ip=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
+
+      - name: Wait for SSH to be available
+        run: |
+          aws ec2 wait instance-status-ok --instance-ids $(terraform output -raw instance_id)
 
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install -y ansible
