@@ -30,18 +30,40 @@ jobs:
         run: terraform taint aws_instance.demo
 
       - name: Terraform Apply
-        run: terraform apply
+        run: terraform apply -auto-approve
 
       - name: Get EC2 Public IP
         id: ip
         run: echo "ip=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
 
-      - name: Wait for SSH to be available
+      - name: Wait for SSH to be available a
         run: |
           aws ec2 wait instance-status-ok --instance-ids $(terraform output -raw instance_id)
+      - name: Second Wait for SSH to be available
+        run: |
+          for i in {1..30}; do
+            nc -zv $(terraform output -raw public_ip) 22 && break
+            echo "Waiting for SSH..."
+            sleep 5
+          done
+      - name: Wait for cloud-init to finish
+        run: |
+          INSTANCE_ID=$(terraform output -raw instance_id)
+          PUBLIC_IP=$(terraform output -raw public_ip)
+          echo "Waiting for cloud-init to finish on $PUBLIC_IP..."
+          for i in {1..60}; do
+            ssh -o StrictHostKeyChecking=no -i demo-key-2.pem ec2-user@$PUBLIC_IP "test -f /var/lib/cloud/instance/boot-finished" && break
+            echo "cloud-init not finished yet..."
+            sleep 5
+          done
 
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install -y ansible
+
+      - name: Fix key permissions
+        run: |
+          chmod 600 $GITHUB_WORKSPACE/demo-key-2.pem
+          ls -l $GITHUB_WORKSPACE/demo-key-2.pem
 
       - name: Update inventory with EC2 public IP
         run: |
@@ -53,6 +75,16 @@ jobs:
           echo "===== INVENTORY CONTENTS Prasanna====="
           cat inventory.ini
           echo "$==============================$"
+
+      - name: Second Wait for cloud-init to finish
+        run: |
+          PUBLIC_IP=$(terraform output -raw public_ip)
+          echo "Waiting for cloud-init to finish on $PUBLIC_IP..."
+          for i in {1..60}; do
+            ssh -o StrictHostKeyChecking=no -i demo-key-2.pem ec2-user@$PUBLIC_IP "test -f /var/lib/cloud/instance/boot-finished" && break
+            echo "cloud-init not finished yet..."
+            sleep 5
+          done
 
       - name: Run Ansible Playbook
         run: |
