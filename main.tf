@@ -1,10 +1,11 @@
+# This is the main.tf
 provider "aws" {
   region = "us-east-2"
 }
 
 data "aws_ami" "amazon_linux" {
-  most_recent = true
   owners      = ["amazon"]
+  most_recent = true
 
   filter {
     name   = "name"
@@ -41,11 +42,6 @@ resource "aws_instance" "demo" {
   instance_type          = "t3.micro"
   key_name               = aws_key_pair.demo.key_name
   vpc_security_group_ids = [aws_security_group.ssh.id]
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
   user_data = <<EOF
 #!/bin/bash
 yum update -y
@@ -56,10 +52,6 @@ EOF
 resource "aws_key_pair" "demo" {
   key_name   = "demo-key-2"
   public_key = file("demo-key-2.pub")
-}
-
-output "instance_id" {
-  value = aws_instance.demo.id
 }
 
 output "public_ip" {
